@@ -24,5 +24,5 @@ router.register(r'mymodel', MyModelViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
+    path('', include(router.urls))
 ]
