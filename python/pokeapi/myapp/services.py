@@ -6,11 +6,14 @@ class PokemonService:
     def __init__(self):
         self.base_url = 'https://pokeapi.co/api/v2/pokemon'
 
-    def get_pokemon_list(self):
+    def get_pokemon_list(self, offset=0, limit=20):
         try:
-            response = requests.get(self.base_url)
+            response = requests.get(f'{self.base_url}?offset={offset}&limit={limit}')
             response.raise_for_status()
-            return response.json()
+            
+            result = response.json()
+            
+            return result
         except requests.exceptions.HTTPError as errh:
             raise CustomException("Http Error") from errh
         except requests.exceptions.ConnectionError as errc:
