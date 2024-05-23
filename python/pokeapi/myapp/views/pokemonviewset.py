@@ -1,27 +1,45 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from ..services import PokemonService
 
+OFFSET_DEFAULT = 0
+LIMIT_DEFAULT = 20
+BASE_URL = 'https://pokeapi.co/api/v2/pokemon/'
+RESULTS = 'results'
+URL = 'url'
+NEXT = 'next'
+PREVIOUS = 'previous'
+COUNT = 'count'
+
 class PokemonViewSet(viewsets.ViewSet):
+
     def list(self, request):
         service = PokemonService()
-        offset = request.query_params.get('offset')
-        limit = request.query_params.get('limit')
+        offset = request.query_params.get('offset', OFFSET_DEFAULT)
+        limit = request.query_params.get('limit', LIMIT_DEFAULT)
         pokemon_data = service.get_pokemon_list(offset=offset, limit=limit)
 
         uri_without_params = request.build_absolute_uri().split('?')[0]
 
-        response = Response(pokemon_data['results'])
+        pokemon_list = pokemon_data[RESULTS]
+        for item in pokemon_list:
+            item[URL] = item[URL].replace(BASE_URL, uri_without_params)
 
-        next_offset = int(offset) + int(limit)
-        if(next_offset < pokemon_data['count']):
-            response['X-NEXT-LINK'] = f"{uri_without_params}?offset={next_offset}&limit={limit}"
+        response = Response(pokemon_list)
 
-        previous_offset = int(offset) - int(limit)
-        if(previous_offset > 0):
-            response['X-PREVIOUS-LINK'] = f"{uri_without_params}?offset={previous_offset}&limit={limit}"
+        next_link = pokemon_data.get(NEXT)
+        if next_link:
+            response['X-NEXT-LINK'] = next_link.replace(BASE_URL, uri_without_params)
 
-        response['X-TOTAL-COUNT'] = pokemon_data.get('count')
-    
+        previous_link = pokemon_data.get(PREVIOUS)
+        if previous_link:
+            response['X-PREVIOUS-LINK'] = previous_link.replace(BASE_URL, uri_without_params)
+        
+        response['X-TOTAL-COUNT'] = pokemon_data.get(COUNT)
+
         return response
+    
+    def retrieve(self, request, pk=None):
+        service = PokemonService()
+        pokemon_data = service.get_pokemon_by_name(pk)
+        return Response(pokemon_data)
