@@ -22,3 +22,20 @@ class PokemonService:
             raise CustomException("Timeout Error") from errt
         except requests.exceptions.RequestException as err:
             raise CustomException("Something went wrong") from err
+        
+    def get_pokemon_by_name(self, id):
+        try:
+            response = requests.get(f'{self.base_url}/{id}')
+            response.raise_for_status()
+            
+            result = response.json()
+            
+            return result
+        except requests.exceptions.HTTPError as errh:
+            raise CustomException("Http Error") from errh
+        except requests.exceptions.ConnectionError as errc:
+            raise CustomException("Error Connecting") from errc
+        except requests.exceptions.Timeout as errt:
+            raise CustomException("Timeout Error") from errt
+        except requests.exceptions.RequestException as err:
+            raise CustomException("Something went wrong") from err
