@@ -19,6 +19,11 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from myapp.views.mymodelviewset import MyModelViewSet
 from myapp.views.pokemonviewset import PokemonViewSet
+from myapp.views.mytokenobtainpairview import MyTokenObtainPairView
+
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 router = DefaultRouter()
 # router.register(r'mymodel', MyModelViewSet)
@@ -27,4 +32,6 @@ router.register(r'pokemon', PokemonViewSet, basename='pokemon')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
