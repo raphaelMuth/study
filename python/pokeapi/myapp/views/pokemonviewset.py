@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from ..services import PokemonService
+from rest_framework.permissions import IsAuthenticated
 
 OFFSET_DEFAULT = 0
 LIMIT_DEFAULT = 20
@@ -12,6 +13,7 @@ PREVIOUS = 'previous'
 COUNT = 'count'
 
 class PokemonViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
 
     def list(self, request):
         service = PokemonService()
