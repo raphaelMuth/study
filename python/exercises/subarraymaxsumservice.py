@@ -62,7 +62,7 @@ class SubArrayMaxSumService:
                 if first_positive_index == -1:
                     first_positive_index = index
             index = index + 1
-
+            
         if all_negative:
             return [higher_negative]
         if all_positive:
