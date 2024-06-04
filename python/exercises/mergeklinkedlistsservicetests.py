@@ -114,6 +114,14 @@ class MergeKLinkedListsServiceTests(unittest.TestCase):
                 ListNode(1)
             ], 
             [1,2,3]
+        ),
+        (
+            [
+                ListNode(3),
+                ListNode(2),
+                ListNode(1)
+            ], 
+            [1,2,3]
         )
     ])
     def test_must_solve_with_solution_one(self, input_array, expected_output):

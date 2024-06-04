@@ -5,11 +5,6 @@ class ListNode:
     def __init__(self, val:int, next = None):
         self.val = val
         self.next = next
-
-    def add_next(self, next):
-        old_next = self.next
-        self.next = next
-        return old_next
     
     def to_arr(self):
         items = []
@@ -38,7 +33,8 @@ class MergeKLinkedListsService:
                         ref1 = ref1.next
                         continue
 
-                    old_next = ref1.add_next(ref2)
+                    old_next = ref1.next
+                    ref1.next = ref2
                     ref1 = ref2
                     ref2 = old_next
                         
